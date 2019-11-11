@@ -94,5 +94,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="resources\icons\" />
+    <Folder Include="resources\NewFolder1\" />
+    <Folder Include="resources\pictures\" />
+    <Folder Include="R\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

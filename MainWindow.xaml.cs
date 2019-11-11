@@ -17,7 +17,12 @@ namespace TheRippler {
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
+
     public partial class MainWindow : Window {
+
+        private enum DrawShape {
+            Line, Rectangle, Ellipse
+        }
         public MainWindow() {
             InitializeComponent();
         }

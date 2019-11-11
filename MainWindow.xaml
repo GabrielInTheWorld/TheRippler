@@ -5,8 +5,32 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TheRippler"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="724" Width="1240" ResizeMode="CanResizeWithGrip" WindowStyle="SingleBorderWindow" WindowState="Maximized">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem x:Name="fileNew" Header="New" InputGestureText="Ctrl+N"></MenuItem>
+                <MenuItem x:Name="fileOpen" Header="Open" InputGestureText="Ctrl+O"></MenuItem>
+                <MenuItem x:Name="fileRecentlyOpened" Header="Recently opened...">
+                 
+                </MenuItem>
+                <MenuItem x:Name="fileSave" Header="Save" InputGestureText="Ctrl+S"></MenuItem>
+                <MenuItem x:Name="fileSaveUnder" Header="Save as..." InputGestureText="Ctrl+Shift+S"></MenuItem>
+                <Separator></Separator>
+            </MenuItem>
+            <MenuItem Header="Edit"></MenuItem>
+            <MenuItem Header="View"></MenuItem>
+        </Menu>
+        <ToolBarTray DockPanel.Dock="Left" Orientation="Vertical">
+            <ToolBar Name="drawToolbar" Width="50">
+                <RadioButton x:Name="drawPencil">
+                    <Image Source="./Resources/Icons/pencil.jpg" Width="32" Height="32"></Image>
+                </RadioButton>
+                <RadioButton>
+                    <Image Source="./Resources/Icons/pencil.jpg" Width="32" Height="32"></Image></RadioButton>
+            </ToolBar>
+        </ToolBarTray>
         
-    </Grid>
+        <Canvas DockPanel.Dock="Bottom"></Canvas>
+    </DockPanel>
 </Window>
