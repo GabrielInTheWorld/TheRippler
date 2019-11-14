@@ -23,14 +23,19 @@
         </Menu>
         <ToolBarTray DockPanel.Dock="Left" Orientation="Vertical">
             <ToolBar Name="drawToolbar" Width="50">
-                <RadioButton x:Name="drawPencil">
+                <RadioButton x:Name="drawPencil" Click="DrawPencil" IsChecked="True">
                     <Image Source="./Resources/Icons/pencil.jpg" Width="32" Height="32"></Image>
                 </RadioButton>
-                <RadioButton>
-                    <Image Source="./Resources/Icons/pencil.jpg" Width="32" Height="32"></Image></RadioButton>
+                <RadioButton Click="DrawRectangle">
+                    <Image Source="./Resources/Icons/pencil.jpg" Width="32" Height="32"></Image>
+                </RadioButton>
             </ToolBar>
         </ToolBarTray>
-        
-        <Canvas DockPanel.Dock="Bottom"></Canvas>
+
+        <Grid>
+            <Canvas Name="CanvasPreview" DockPanel.Dock="Bottom" Panel.ZIndex="2" Background="Transparent" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseMove="CanvasMouseMove"></Canvas>
+            <Canvas Name="CanvasDraw" Background="Red" Panel.ZIndex="1"></Canvas>
+        </Grid>
+ 
     </DockPanel>
 </Window>

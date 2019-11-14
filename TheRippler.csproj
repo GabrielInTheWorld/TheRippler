@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Source\Collections\DataVector.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -96,7 +97,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="resources\icons\" />
-    <Folder Include="resources\NewFolder1\" />
     <Folder Include="resources\pictures\" />
     <Folder Include="R\" />
   </ItemGroup>
