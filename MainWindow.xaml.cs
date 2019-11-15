@@ -23,13 +23,15 @@ namespace TheRippler {
     public partial class MainWindow : Window {
 
         private enum DrawShape {
-            Line, Rectangle, Ellipse
+            Pen, Line, Rectangle, Ellipse
         }
 
         private DrawShape selectedShape = DrawShape.Line;
         private Point startPointer;
         private Point movePointer;
         private Point endPointer;
+
+        private Polyline drawingLine = null;
 
         private DataVector<UIElement> elementStack = new DataVector<UIElement>();
 
@@ -38,7 +40,11 @@ namespace TheRippler {
         }
 
         private void Draw() {
+            Console.WriteLine("draw");
             switch (this.selectedShape) {
+                case DrawShape.Pen:
+                    this.drawingLine = null;
+                    break;
                 case DrawShape.Line:
                     this.ToCanvas(this.DrawLine(this.endPointer.X, this.endPointer.Y));
                     break;
@@ -50,6 +56,11 @@ namespace TheRippler {
 
         private void DrawPreview() {
             switch(this.selectedShape) {
+                case DrawShape.Pen:
+                    if (startPointer != movePointer) {
+                        this.drawingLine.Points.Add(movePointer);
+                    }
+                    break;
                 case DrawShape.Line:
                     this.ToPreviewCanvas(this.DrawLine(this.movePointer.X, this.movePointer.Y));
                     break;
@@ -57,6 +68,13 @@ namespace TheRippler {
                     this.ToPreviewCanvas(this.DrawRectangle());
                     break;
             }
+        }
+
+        private Polyline DrawPencil() {
+            return new Polyline {
+                Stroke = Brushes.Blue,
+                StrokeThickness = 2.0
+            };
         }
 
         private Line DrawLine(double endX, double endY) {
@@ -77,6 +95,7 @@ namespace TheRippler {
         }
 
         private void ToCanvas(UIElement element) {
+            Console.WriteLine("canvas", element, CanvasDraw.Height, CanvasDraw.Width);
             CanvasDraw.Children.Add(element);
         }
 
@@ -86,6 +105,10 @@ namespace TheRippler {
         }
 
         private void DrawPencil(object sender, RoutedEventArgs e) {
+            this.selectedShape = DrawShape.Pen;
+        }
+
+        private void DrawLine(object sender, RoutedEventArgs e) {
             this.selectedShape = DrawShape.Line;
         }
 
@@ -94,19 +117,22 @@ namespace TheRippler {
         }
 
         private void CanvasMouseDown(object sender, MouseButtonEventArgs e) {
-            this.startPointer = e.GetPosition(this);
+            this.startPointer = e.GetPosition(this.CanvasPreview);
+            if (this.selectedShape == DrawShape.Pen) {
+                this.drawingLine = this.DrawPencil();
+                this.ToCanvas(this.drawingLine);
+            }
         }
 
         private void CanvasMouseUp(object sender, MouseButtonEventArgs e) {
-            this.endPointer = e.GetPosition(this);
+            Console.WriteLine("Mouse up", sender);
+            this.endPointer = e.GetPosition(CanvasPreview);
             this.Draw();
         }
 
         private void CanvasMouseMove(object sender, MouseEventArgs e) {
-            Console.WriteLine("mouse move");
             if (e.LeftButton == MouseButtonState.Pressed) {
-                Console.WriteLine("Butten pressed");
-                this.movePointer = e.GetPosition(this);
+                this.movePointer = e.GetPosition(CanvasPreview);
                 this.DrawPreview();
             }
         }

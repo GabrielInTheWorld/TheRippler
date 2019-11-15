@@ -26,7 +26,7 @@ namespace TheRippler.Source.Collections {
         }
 
         public void Add(T element) {
-            if (this.size == this.stack.Length) {
+            if (this._size == this.stack.Length) {
                 this.Resize();
             }
             this.stack[this._size++] = element;

@@ -12,7 +12,7 @@
                 <MenuItem x:Name="fileNew" Header="New" InputGestureText="Ctrl+N"></MenuItem>
                 <MenuItem x:Name="fileOpen" Header="Open" InputGestureText="Ctrl+O"></MenuItem>
                 <MenuItem x:Name="fileRecentlyOpened" Header="Recently opened...">
-                 
+
                 </MenuItem>
                 <MenuItem x:Name="fileSave" Header="Save" InputGestureText="Ctrl+S"></MenuItem>
                 <MenuItem x:Name="fileSaveUnder" Header="Save as..." InputGestureText="Ctrl+Shift+S"></MenuItem>
@@ -23,7 +23,10 @@
         </Menu>
         <ToolBarTray DockPanel.Dock="Left" Orientation="Vertical">
             <ToolBar Name="drawToolbar" Width="50">
-                <RadioButton x:Name="drawPencil" Click="DrawPencil" IsChecked="True">
+                <RadioButton x:Name="drawPencil" Click="DrawPencil">
+                    <Image Source="./Resources/Icons/pencil.jpg" Width="32" Height="32"></Image>
+                </RadioButton>
+                <RadioButton x:Name="drawLine" Click="DrawLine" IsChecked="True">
                     <Image Source="./Resources/Icons/pencil.jpg" Width="32" Height="32"></Image>
                 </RadioButton>
                 <RadioButton Click="DrawRectangle">
@@ -32,10 +35,16 @@
             </ToolBar>
         </ToolBarTray>
 
-        <Grid>
-            <Canvas Name="CanvasPreview" DockPanel.Dock="Bottom" Panel.ZIndex="2" Background="Transparent" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseMove="CanvasMouseMove"></Canvas>
-            <Canvas Name="CanvasDraw" Background="Red" Panel.ZIndex="1"></Canvas>
+        <Grid DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Canvas Name="CanvasPreview" Panel.ZIndex="2" Background="Transparent" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseMove="CanvasMouseMove" Margin="0,0,0,0.5" Grid.Row="1"></Canvas>
+            <Canvas Name="CanvasDraw" Background="White" Panel.ZIndex="1" Margin="0,0,0,0.5" Grid.Row="1"></Canvas>
         </Grid>
- 
+
     </DockPanel>
 </Window>
