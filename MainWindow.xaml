@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TheRippler"
+        xmlns:ControlNamespace="clr-namespace:TheRippler.Source.Controls"
         mc:Ignorable="d"
         Title="MainWindow" Height="724" Width="1240" ResizeMode="CanResizeWithGrip" WindowStyle="SingleBorderWindow" WindowState="Maximized">
     <DockPanel>
@@ -24,26 +25,21 @@
         <ToolBarTray DockPanel.Dock="Left" Orientation="Vertical">
             <ToolBar Name="drawToolbar" Width="50">
                 <RadioButton x:Name="drawPencil" Click="DrawPencil">
-                    <Image Source="./Resources/Icons/pencil.jpg" Width="32" Height="32"></Image>
+                    <Image Source="/Resources/Icons/Pencil.jpg" Width="32" Height="32"></Image>
                 </RadioButton>
                 <RadioButton x:Name="drawLine" Click="DrawLine" IsChecked="True">
-                    <Image Source="./Resources/Icons/pencil.jpg" Width="32" Height="32"></Image>
+                    <Image Source="./Resources/Icons/Line.jpg" Width="32" Height="32"></Image>
                 </RadioButton>
                 <RadioButton Click="DrawRectangle">
-                    <Image Source="./Resources/Icons/pencil.jpg" Width="32" Height="32"></Image>
+                    <Image Source="./Resources/Icons/Rect.jpg" Width="32" Height="32"></Image>
                 </RadioButton>
             </ToolBar>
         </ToolBarTray>
 
         <Grid DockPanel.Dock="Bottom">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Canvas Name="CanvasPreview" Panel.ZIndex="2" Background="Transparent" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseMove="CanvasMouseMove" Margin="0,0,0,0.5" Grid.Row="1"></Canvas>
-            <Canvas Name="CanvasDraw" Background="White" Panel.ZIndex="1" Margin="0,0,0,0.5" Grid.Row="1"></Canvas>
+           <!-- <Canvas Name="CanvasPreview" Background="Transparent" Panel.ZIndex="2" MouseDown="CanvasMouseDown" MouseLeftButtonUp="CanvasMouseUp" MouseUp="CanvasMouseUp" MouseMove="CanvasMouseMove"></Canvas>
+            <Canvas Name="CanvasDraw" Background="White" Panel.ZIndex="1"></Canvas> -->
+            <ControlNamespace:Plane SelectedTool="{Binding Path=SelectedShape}" />
         </Grid>
 
     </DockPanel>

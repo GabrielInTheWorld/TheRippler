@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,126 +16,96 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TheRippler.Source.Collections;
+using TheRippler.Source.Data;
 
 namespace TheRippler {
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
 
-    public partial class MainWindow : Window {
+    public partial class MainWindow : Window, INotifyPropertyChanged {
 
-        private enum DrawShape {
-            Pen, Line, Rectangle, Ellipse
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        private DrawShape selectedShape = DrawShape.Line;
-        private Point startPointer;
-        private Point movePointer;
-        private Point endPointer;
+        //private bool isDrawing = false;
 
-        private Polyline drawingLine = null;
+        private DrawShape selectedShape;
+        //private BehaviorSubject<DrawShape> observableSelectedShape = new BehaviorSubject<DrawShape>(DrawShape.Line);
+        //private Point startPointer;
+        //private Point movePointer;
+        //private Point endPointer;
 
-        private DataVector<UIElement> elementStack = new DataVector<UIElement>();
+        //private Polyline drawingLine = null;
+
+        //private DataVector<UIElement> elementStack = new DataVector<UIElement>();
 
         public MainWindow() {
             InitializeComponent();
+            DataContext = this;
+            NextShape(DrawShape.Line);
         }
 
-        private void Draw() {
-            Console.WriteLine("draw");
-            switch (this.selectedShape) {
-                case DrawShape.Pen:
-                    this.drawingLine = null;
-                    break;
-                case DrawShape.Line:
-                    this.ToCanvas(this.DrawLine(this.endPointer.X, this.endPointer.Y));
-                    break;
-                case DrawShape.Rectangle:
-                    this.ToCanvas(this.DrawRectangle());
-                    break;
-            }
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "") {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void DrawPreview() {
-            switch(this.selectedShape) {
-                case DrawShape.Pen:
-                    if (startPointer != movePointer) {
-                        this.drawingLine.Points.Add(movePointer);
-                    }
-                    break;
-                case DrawShape.Line:
-                    this.ToPreviewCanvas(this.DrawLine(this.movePointer.X, this.movePointer.Y));
-                    break;
-                case DrawShape.Rectangle:
-                    this.ToPreviewCanvas(this.DrawRectangle());
-                    break;
-            }
-        }
+        //private Polyline DrawPencil() {
+        //    return new Polyline {
+        //        Stroke = Brushes.Blue,
+        //        StrokeThickness = 2.0
+        //    };
+        //}
 
-        private Polyline DrawPencil() {
-            return new Polyline {
-                Stroke = Brushes.Blue,
-                StrokeThickness = 2.0
-            };
-        }
+        //private Line DrawLine(double endX, double endY) {
+        //    return new Line() {
+        //        Stroke = Brushes.Blue,
+        //        X1 = startPointer.X,
+        //        Y1 = startPointer.Y,
+        //        X2 = endX,
+        //        Y2 = endY
+        //    };
+        //}
 
-        private Line DrawLine(double endX, double endY) {
-            return new Line() {
-                Stroke = Brushes.Blue,
-                X1 = this.startPointer.X,
-                Y1 = this.startPointer.Y,
-                X2 = endX,
-                Y2 = endY
-            };
-        }
-
-        private Rectangle DrawRectangle() {
-            return new Rectangle() {
-                Stroke = Brushes.Blue,
-                StrokeThickness = 4
-            };
-        }
-
-        private void ToCanvas(UIElement element) {
-            Console.WriteLine("canvas", element, CanvasDraw.Height, CanvasDraw.Width);
-            CanvasDraw.Children.Add(element);
-        }
-
-        private void ToPreviewCanvas(UIElement element) {
-            CanvasPreview.Children.Clear();
-            CanvasPreview.Children.Add(element);
-        }
+        //private Rectangle DrawRectangle() {
+        //    return new Rectangle() {
+        //        Stroke = Brushes.Blue,
+        //        StrokeThickness = 4
+        //    };
+        //}
 
         private void DrawPencil(object sender, RoutedEventArgs e) {
-            this.selectedShape = DrawShape.Pen;
+            NextShape(DrawShape.Pen);
+            //this.selectedShape = DrawShape.Pen;
+            //this.observableSelectedShape.Next(DrawShape.Pen);
         }
 
         private void DrawLine(object sender, RoutedEventArgs e) {
-            this.selectedShape = DrawShape.Line;
+            NextShape(DrawShape.Line);
+            //this.selectedShape = DrawShape.Line;
+            //this.observableSelectedShape.Next(DrawShape.Line);
         }
 
         private void DrawRectangle(object sender, RoutedEventArgs e) {
-            this.selectedShape = DrawShape.Rectangle;
+            NextShape(DrawShape.Rectangle);
+            //this.selectedShape = DrawShape.Rectangle;
+            //this.observableSelectedShape.Next(DrawShape.Rectangle);
         }
 
-        private void CanvasMouseDown(object sender, MouseButtonEventArgs e) {
-            this.startPointer = e.GetPosition(this.CanvasPreview);
-            if (this.selectedShape == DrawShape.Pen) {
-                this.drawingLine = this.DrawPencil();
-                this.ToCanvas(this.drawingLine);
-            }
+        //private void Plane_Loaded(object sender, RoutedEventArgs e) {
+        //    Console.WriteLine("Loaded");
+        //}
+
+        private void NextShape(DrawShape shape) {
+            SelectedShape = shape;
+            //OnPropertyChanged("selectedShape");
         }
 
-        private void CanvasMouseUp(object sender, MouseButtonEventArgs e) {
-            Console.WriteLine("Mouse up", sender);
-            this.endPointer = e.GetPosition(CanvasPreview);
-            this.Draw();
-        }
-
-        private void CanvasMouseMove(object sender, MouseEventArgs e) {
-            if (e.LeftButton == MouseButtonState.Pressed) {
-                this.movePointer = e.GetPosition(CanvasPreview);
-                this.DrawPreview();
+        public DrawShape SelectedShape {
+            get { return this.selectedShape; }
+            set { if (value != selectedShape) {
+                    selectedShape = value;
+                    OnPropertyChanged();
+                } 
             }
         }
     }
