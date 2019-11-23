@@ -61,10 +61,15 @@
     <Compile Include="Source\Controls\Plane.xaml.cs">
       <DependentUpon>Plane.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Source\Controls\ToolBarControl.xaml.cs">
+      <DependentUpon>ToolBarControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Source\Data\BehaviorSubject.cs" />
+    <Compile Include="Source\Data\Interfaces\ICustomObservable.cs" />
     <Compile Include="Source\Data\Observable.cs" />
     <Compile Include="Source\Data\Observer.cs" />
     <Compile Include="Source\Enumarations\DrawShape.cs" />
+    <Compile Include="Source\Models\SharedModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -78,6 +83,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Source\Controls\Plane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Source\Controls\ToolBarControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -110,7 +119,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\Pictures\" />
-    <Folder Include="Source\Data\Interfaces\" />
     <Folder Include="Themes\" />
   </ItemGroup>
   <ItemGroup>

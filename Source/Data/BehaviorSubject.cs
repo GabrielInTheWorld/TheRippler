@@ -9,15 +9,17 @@ namespace TheRippler.Source.Data {
 
         public T Value { set; get; }
 
-        public BehaviorSubject(T initValue) {
-            Value = initValue;
+        public BehaviorSubject(T initValue = default) {
+            //Value = initValue;
+            Next(initValue);
         }
 
         public void Next(T value) {
             Value = value;
-            foreach(Observer<T> observer in observers) {
-                observer.OnNext(value);
-            }
+            NextValue(value);
+            //foreach(<T, T> observer in observers) {
+            //    observer.OnNext(value);
+            //}
         }
     }
 }

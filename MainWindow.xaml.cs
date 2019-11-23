@@ -17,6 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TheRippler.Source.Collections;
 using TheRippler.Source.Data;
+using TheRippler.Source.Models;
 
 namespace TheRippler {
     /// <summary>
@@ -31,8 +32,11 @@ namespace TheRippler {
         // Private members
         private DrawShape selectedShape;
 
+        private SharedModel model;
+
         public MainWindow() {
             InitializeComponent();
+            model = SharedModel.GetInstance();
             DataContext = this;
             NextShape(DrawShape.Line);
         }
@@ -54,7 +58,8 @@ namespace TheRippler {
         }
 
         private void NextShape(DrawShape shape) {
-            SelectedShape = shape;
+            //SelectedShape = shape;
+            model.Shape = shape;
         }
 
         public DrawShape SelectedShape {

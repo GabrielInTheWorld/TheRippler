@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Canvas Name="CanvasPreview" Background="Transparent" Panel.ZIndex="2" MouseDown="CanvasMouseDown" MouseLeftButtonUp="CanvasMouseUp" MouseUp="CanvasMouseUp" MouseMove="CanvasMouseMove"></Canvas>
-        <Canvas Name="CanvasDraw" Background="White" Panel.ZIndex="1"></Canvas>
+        <!-- <Canvas Name="CanvasPreview" Background="Transparent" Panel.ZIndex="2" MouseDown="CanvasMouseDown" MouseLeftButtonUp="CanvasMouseUp" MouseUp="CanvasMouseUp" MouseMove="CanvasMouseMove"></Canvas> -->
+        <Canvas Name="CanvasDraw" Background="White" Panel.ZIndex="1" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseMove="CanvasMouseMove"></Canvas>
     </Grid>
 </UserControl>
