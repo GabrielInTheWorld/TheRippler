@@ -25,19 +25,11 @@ namespace TheRippler {
 
     public partial class MainWindow : Window, INotifyPropertyChanged {
 
+        // Public members
         public event PropertyChangedEventHandler PropertyChanged;
 
-        //private bool isDrawing = false;
-
+        // Private members
         private DrawShape selectedShape;
-        //private BehaviorSubject<DrawShape> observableSelectedShape = new BehaviorSubject<DrawShape>(DrawShape.Line);
-        //private Point startPointer;
-        //private Point movePointer;
-        //private Point endPointer;
-
-        //private Polyline drawingLine = null;
-
-        //private DataVector<UIElement> elementStack = new DataVector<UIElement>();
 
         public MainWindow() {
             InitializeComponent();
@@ -49,55 +41,20 @@ namespace TheRippler {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        //private Polyline DrawPencil() {
-        //    return new Polyline {
-        //        Stroke = Brushes.Blue,
-        //        StrokeThickness = 2.0
-        //    };
-        //}
-
-        //private Line DrawLine(double endX, double endY) {
-        //    return new Line() {
-        //        Stroke = Brushes.Blue,
-        //        X1 = startPointer.X,
-        //        Y1 = startPointer.Y,
-        //        X2 = endX,
-        //        Y2 = endY
-        //    };
-        //}
-
-        //private Rectangle DrawRectangle() {
-        //    return new Rectangle() {
-        //        Stroke = Brushes.Blue,
-        //        StrokeThickness = 4
-        //    };
-        //}
-
         private void DrawPencil(object sender, RoutedEventArgs e) {
             NextShape(DrawShape.Pen);
-            //this.selectedShape = DrawShape.Pen;
-            //this.observableSelectedShape.Next(DrawShape.Pen);
         }
 
         private void DrawLine(object sender, RoutedEventArgs e) {
             NextShape(DrawShape.Line);
-            //this.selectedShape = DrawShape.Line;
-            //this.observableSelectedShape.Next(DrawShape.Line);
         }
 
         private void DrawRectangle(object sender, RoutedEventArgs e) {
             NextShape(DrawShape.Rectangle);
-            //this.selectedShape = DrawShape.Rectangle;
-            //this.observableSelectedShape.Next(DrawShape.Rectangle);
         }
-
-        //private void Plane_Loaded(object sender, RoutedEventArgs e) {
-        //    Console.WriteLine("Loaded");
-        //}
 
         private void NextShape(DrawShape shape) {
             SelectedShape = shape;
-            //OnPropertyChanged("selectedShape");
         }
 
         public DrawShape SelectedShape {

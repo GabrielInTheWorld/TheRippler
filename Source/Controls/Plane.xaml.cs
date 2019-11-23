@@ -31,7 +31,6 @@ namespace TheRippler.Source.Controls {
 
         private bool isDrawing = false;
 
-        private DrawShape selectedShape = DrawShape.Line;
         private Point startPointer;
         private Point movePointer;
         private Point endPointer;
@@ -40,20 +39,13 @@ namespace TheRippler.Source.Controls {
 
         public Plane() {
             InitializeComponent();
-
-            Loaded += AfterLoading;
         }
 
         public virtual void OnPropertyChanged(string propertyName) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void AfterLoading(object sender, RoutedEventArgs e) {
-            Console.WriteLine(SelectedTool);
-        }
-
         private void Draw() {
-            //Console.WriteLine("draw");
             switch (SelectedTool) {
                 case DrawShape.Pen:
                     drawingLine = null;
@@ -108,7 +100,6 @@ namespace TheRippler.Source.Controls {
         }
 
         private void ToCanvas(UIElement element) {
-            //Console.WriteLine("canvas", element, CanvasDraw.Height, CanvasDraw.Width);
             CanvasDraw.Children.Add(element);
         }
 
@@ -117,24 +108,10 @@ namespace TheRippler.Source.Controls {
             CanvasPreview.Children.Add(element);
         }
 
-        private void DrawPencil(object sender, RoutedEventArgs e) {
-            this.selectedShape = DrawShape.Pen;
-        }
-
-        private void DrawLine(object sender, RoutedEventArgs e) {
-            this.selectedShape = DrawShape.Line;
-        }
-
-        private void DrawRectangle(object sender, RoutedEventArgs e) {
-            this.selectedShape = DrawShape.Rectangle;
-        }
-
         private void CanvasMouseDown(object sender, MouseButtonEventArgs e) {
-            Console.WriteLine("Mouse down");
             if (e.LeftButton == MouseButtonState.Pressed) {
                 startPointer = e.GetPosition(CanvasDraw);
                 isDrawing = true;
-                //((Control)sender).CaptureMouse = true;
                 if (SelectedTool == DrawShape.Pen) {
                     drawingLine = DrawPencil();
                     ToCanvas(drawingLine);
@@ -143,15 +120,12 @@ namespace TheRippler.Source.Controls {
         }
 
         public void CanvasMouseUp(object sender, MouseButtonEventArgs e) {
-            //Console.WriteLine("Mouse up", sender);
             endPointer = e.GetPosition(CanvasDraw);
             Draw();
             isDrawing = false;
         }
 
         private void CanvasMouseMove(object sender, MouseEventArgs e) {
-            //Console.WriteLine("move");
-            //Control control = sender as Control;
             if (e.LeftButton == MouseButtonState.Pressed) {
                 movePointer = e.GetPosition(CanvasDraw);
                 DrawPreview();
@@ -160,9 +134,6 @@ namespace TheRippler.Source.Controls {
                 Draw();
                 isDrawing = false;
             }
-            //if (e.LeftButton == MouseButtonState.Released) {
-            //    Console.WriteLine("move released");
-            //}
         }
     }
 }
