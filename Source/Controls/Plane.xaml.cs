@@ -8,11 +8,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TheRippler.Source.BaseClasses;
 using TheRippler.Source.Data;
 using TheRippler.Source.Models;
 
@@ -21,117 +23,190 @@ namespace TheRippler.Source.Controls {
     /// Interaction logic for Plane.xaml
     /// </summary>
     public partial class Plane : UserControl, INotifyPropertyChanged {
+
+        /**
+         * @deprecated
+         */
         public static readonly DependencyProperty SelectedToolProperty = DependencyProperty.Register("SelectedTool", typeof(DrawShape), typeof(Plane));
 
+        /**
+         * @deprecated
+         */
         public DrawShape SelectedTool {
             get { return (DrawShape)GetValue(SelectedToolProperty); }
             set { Console.WriteLine(value); SetValue(SelectedToolProperty, value); OnPropertyChanged("SelectedTool"); }
         }
 
+        /**
+         * @deprecated
+         */
         public event PropertyChangedEventHandler PropertyChanged;
-
-        //private bool isDrawing = false;
+        public string planeName = "Hello World";
+        public string PlaneName { get { return planeName; } private set { planeName = value; } }
 
         private Point startPointer;
         private Point movePointer;
-        //private Point endPointer;
 
-        private Polyline drawingLine = null;
-        private Rectangle rect = null;
-        private Line line = null;
+        //private Polyline drawingLine = null;
+        //private Rectangle rect = null;
+        //private Line line = null;
+        //private Stroke currentStroke = null;
+        private Shape element = null;
 
-        private SharedModel model = null;
+        private readonly SharedModel model = null;
         private DrawShape selectedShape;
+
+        private readonly List<IDisposable> subscriptions = new List<IDisposable>();
 
         public Plane() {
             InitializeComponent();
             model = SharedModel.GetInstance();
-            model.getShape().Subscribe((value) => { selectedShape = value; return value; });
+            subscriptions.Add(model.GetShape().Subscribe((value) => { ChangeShape(value); return value; }));
+        }
+
+        ~Plane() {
+            ClearSubscriptions();
         }
 
         public virtual void OnPropertyChanged(string propertyName) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        //private void Draw() {
-        //    switch (SelectedTool) {
-        //        case DrawShape.Pen:
-        //            drawingLine = null;
-        //            break;
-        //        case DrawShape.Line:
-        //            //ToCanvas(DrawLine(endPointer.X, endPointer.Y));
-        //            break;
-        //        case DrawShape.Rectangle:
-        //            //ToCanvas(DrawRectangle(endPointer.X, endPointer.Y));
-        //            break;
-        //    }
-        //}
+        override
+        public string ToString() {
+            return planeName;
+        }
 
-        private void StartDrawing() {
+        private void ChangeShape(DrawShape nextShape) {
+            Console.WriteLine(nextShape);
+            selectedShape = nextShape;
             switch (selectedShape) {
                 case DrawShape.Pen:
-                    drawingLine = DrawPencil();
-                    ToCanvas(drawingLine);
+                    HidePreview();
+                    CanvasDraw.EditingMode = InkCanvasEditingMode.Ink;
                     break;
+                case DrawShape.Erase:
+                    HidePreview();
+                    CanvasDraw.EditingMode = InkCanvasEditingMode.EraseByPoint;
+                    break;
+                default:
+                    ShowPreview();
+                    CanvasDraw.EditingMode = InkCanvasEditingMode.None;
+                    //PreviewCanvasDraw.EditingMode = InkCanvasEditingMode.None;
+                    break;
+            }
+        }
+
+        private void StartDrawing() {
+            //currentStroke = null;
+            switch (selectedShape) {
+                //case DrawShape.Pen:
+                //    drawingLine = DrawPencil();
+                //    ToCanvas(drawingLine);
+                //    break;
                 case DrawShape.Line:
-                    line = DrawLine();
-                    //line.X1 = startPointer.X;
-                    //line.X2 = startPointer.X;
-                    //line.Y1 = startPointer.Y;
-                    //line.Y2 = startPointer.Y;
-                    ToCanvas(line);
+                    element = DrawLine();
+                    ToPreview(element);
+
+                    //StylusPointCollection stylusPoints = new StylusPointCollection {
+                    //    new StylusPoint(10, 10),
+                    //    new StylusPoint(10, 100),
+                    //    new StylusPoint(100, 100),
+                    //    new StylusPoint(100, 10),
+                    //    new StylusPoint(10, 10)
+                    //};
+                    //Stroke stroke = new Stroke(stylusPoints);
+                    //stroke.DrawingAttributes.Color = Colors.Red;
+                    //CanvasDraw.Strokes.Add(stroke);
                     break;
                 case DrawShape.Rectangle:
-                    rect = DrawRectangle();
-                    Canvas.SetLeft(rect, startPointer.X);
-                    Canvas.SetTop(rect, startPointer.Y);
-                    ToCanvas(rect);
-                    //ToCanvas(DrawRectangle(endPointer.X, endPointer.Y));
+                    element = DrawRectangle();
+                    //Console.WriteLine("Draw rect");
+                    //Console.WriteLine(startPointer);
+
+                    //Canvas.SetLeft(element, startPointer.X);
+                    //Canvas.SetTop(element, startPointer.Y);
+                    ToPreview(element);
                     break;
             }
         }
 
         private void Draw() {
+            //PreviewCanvasDraw.Strokes.Clear();
+            StylusPointCollection stylus;
             switch (selectedShape) {
-                case DrawShape.Pen:
-                    if (startPointer != movePointer) {
-                        drawingLine.Points.Add(movePointer);
-                    }
-                    break;
+                //case DrawShape.Pen:
+                //    if (startPointer != movePointer) {
+                //        drawingLine.Points.Add(movePointer);
+                //    }
+                //    break;
                 case DrawShape.Line:
-                    //ToPreviewCanvas(DrawLine(movePointer.X, movePointer.Y));
-                    if (line == null) {
+                    if (element == null) {
                         return;
                     }
-                    line.X2 = movePointer.X;
-                    line.Y2 = movePointer.Y;
+                    ((Line)element).X2 = movePointer.X;
+                    ((Line)element).Y2 = movePointer.Y;
+
+                    //stylus = new StylusPointCollection {
+                    //    new StylusPoint(startPointer.X, startPointer.Y),
+                    //    new StylusPoint(movePointer.X, movePointer.Y)
+                    //};
+                    //currentStroke = new Stroke(stylus);
+                    //currentStroke.DrawingAttributes.Color = Colors.Blue;
+                    //PreviewCanvasDraw.Strokes.Add(currentStroke);
                     break;
                 case DrawShape.Rectangle:
-                    if (rect == null) {
+                    //stylus = new StylusPointCollection {
+                    //    new StylusPoint(startPointer.X, startPointer.Y),
+                    //    new StylusPoint(movePointer.X, startPointer.Y),
+                    //    new StylusPoint(movePointer.X, movePointer.Y),
+                    //    new StylusPoint(startPointer.X, movePointer.Y),
+                    //    new StylusPoint(startPointer.X, startPointer.Y)
+                    //};
+                    //currentStroke = new Stroke(stylus);
+                    //currentStroke.DrawingAttributes.Color = Colors.Blue;
+                    //PreviewCanvasDraw.Strokes.Add(currentStroke);
+                    if (element == null) {
                         return;
                     }
+                    //Console.WriteLine("draw rect on move");
+                    //Console.WriteLine(movePointer);
                     double x = Math.Min(startPointer.X, movePointer.X);
                     double y = Math.Min(startPointer.Y, movePointer.Y);
 
                     double width = Math.Max(startPointer.X, movePointer.X) - x;
                     double height = Math.Max(startPointer.Y, movePointer.Y) - y;
 
-                    rect.Width = width;
-                    rect.Height = height;
+                    ((Rectangle)element).Width = width;
+                    ((Rectangle)element).Height = height;
 
-                    Canvas.SetLeft(rect, x);
-                    Canvas.SetTop(rect, y);
-                    //ToPreviewCanvas(DrawRectangle(movePointer.X, movePointer.Y));
+                    Canvas.SetLeft(element, x);
+                    Canvas.SetTop(element, y);
+                    break;
+                case DrawShape.Circle:
+                    //Ellipse ellipse = new Ellipse();
+                    //ellipse.Stroke = Brushes.Blue;
+                    //stylus = new StylusPointCollection {
+                    //    new StylusPoint(startPointer.X, startPointer.Y),
+                    //    new StylusPoint(movePointer.X, movePointer.Y)
+                    //};
+                    //if (currentStroke != null) {
+                    //    //PreviewCanvasDraw.Strokes.Remove(currentStroke);
+                    //}
+                    //currentStroke = new BaseStroke(stylus);
+                    //currentStroke.DrawingAttributes.Color = Colors.Blue;
+                    //PreviewCanvasDraw.Strokes.Add(currentStroke);
+
                     break;
             }
         }
 
-        private Polyline DrawPencil() {
-            return new Polyline {
-                Stroke = Brushes.Blue,
-                StrokeThickness = 2.0
-            };
-        }
+        //private Polyline DrawPencil() {
+        //    return new Polyline {
+        //        Stroke = Brushes.Blue,
+        //        StrokeThickness = 2.0
+        //    };
+        //}
 
         private Line DrawLine() {
             return new Line() {
@@ -144,81 +219,120 @@ namespace TheRippler.Source.Controls {
         }
 
         private Rectangle DrawRectangle() {
-            //double width = endX > startPointer.X ? endX - startPointer.X : startPointer.X - endX;
-            //double height = endY > startPointer.Y ? endY - startPointer.Y : startPointer.Y - endY;
-            return new Rectangle() {
+            Rectangle rect = new Rectangle() {
                 Stroke = Brushes.Blue,
-                StrokeThickness = 4,
-                //Width = width,
-                //Height = height,
+                StrokeThickness = 4
             };
+
+            double x = Math.Min(startPointer.X, movePointer.X);
+            double y = Math.Min(startPointer.Y, movePointer.Y);
+
+            double width = Math.Max(startPointer.X, movePointer.X) - x;
+            double height = Math.Max(startPointer.Y, movePointer.Y) - y;
+
+            rect.Width = width;
+            rect.Height = height;
+
+            Canvas.SetLeft(rect, x);
+            Canvas.SetTop(rect, y);
+
+            return rect;
+            //return new Rectangle() {
+            //    Stroke = Brushes.Blue,
+            //    StrokeThickness = 4
+            //};
         }
 
-        private void ToCanvas(UIElement element) {
-            CanvasDraw.Children.Add(element);
+        private void ToPreview(UIElement element) {
+            PreviewCanvasDraw.Children.Add(element);
+            //if (stroke == null) {
+            //    return;
+            //}
+            //stroke.DrawingAttributes.Color = Colors.Black;
+            //CanvasDraw.Strokes.Add(stroke);
+            //HidePreview();
         }
 
-        //private void ToPreviewCanvas(UIElement element) {
-        //    CanvasPreview.Children.Clear();
-        //    CanvasPreview.Children.Add(element);
-        //}
+        private void ToCanvas() {
+            //element.Stroke = Brushes.Black;
+            CanvasDraw.Children.Add(DrawRectangle());
+        }
 
         private void CanvasMouseDown(object sender, MouseButtonEventArgs e) {
             if (e.LeftButton == MouseButtonState.Pressed) {
-                startPointer = e.GetPosition(CanvasDraw);
+                startPointer = e.GetPosition(PreviewCanvasDraw);
+                movePointer = e.GetPosition(PreviewCanvasDraw);
+                //Console.WriteLine("startPointer:");
+                //Console.WriteLine(startPointer);
                 StartDrawing();
-                //isDrawing = true;
-                //if (SelectedTool == DrawShape.Pen) {
-                //    drawingLine = DrawPencil();
-                //    ToCanvas(drawingLine);
-                //}
-                //switch (SelectedTool) {
-                //    case DrawShape.Pen:
-                //        drawingLine = DrawPencil();
-                //        ToCanvas(drawingLine);
-                //        break;
-                //    case DrawShape.Line:
-                //        line = DrawLine();
-                //        //line.X1 = startPointer.X;
-                //        //line.X2 = startPointer.X;
-                //        //line.Y1 = startPointer.Y;
-                //        //line.Y2 = startPointer.Y;
-                //        ToCanvas(line);
-                //        break;
-                //    case DrawShape.Rectangle:
-                //        rect = DrawRectangle();
-                //        Canvas.SetLeft(rect, startPointer.X);
-                //        Canvas.SetTop(rect, startPointer.Y);
-                //        ToCanvas(rect);
-                //        //ToCanvas(DrawRectangle(endPointer.X, endPointer.Y));
-                //        break;
-                //}
             }
         }
 
         public void CanvasMouseUp(object sender, MouseButtonEventArgs e) {
-            //Console.WriteLine("mouse up");
+            Console.WriteLine("mouseup");
+            ToCanvas();
             ClearForms();
-            //endPointer = e.GetPosition(CanvasDraw);
-            //Draw();
-            //isDrawing = false;
+            //if (IsIllegalShape()) {
+            //    return;
+            //}
+            //ToCanvas(currentStroke);
+            //ClearPreview();
         }
 
         private void CanvasMouseMove(object sender, MouseEventArgs e) {
             if (e.LeftButton == MouseButtonState.Pressed) {
-                movePointer = e.GetPosition(CanvasDraw);
+                movePointer = e.GetPosition(PreviewCanvasDraw);
                 Draw();
-            //} else if (isDrawing && e.LeftButton == MouseButtonState.Released) {
-            //    endPointer = e.GetPosition(CanvasPreview);
-            //    Draw();
-            //    isDrawing = false;
             }
         }
 
+        private void ChangeCursor() {
+            Cursor cursor;
+            switch (selectedShape) {
+                //case DrawShape.Ellipse:
+                //    cursor = Cursors.ArrowCD;
+                //    break;
+                //case DrawShape.Line:
+                //    cursor = Cursors.Wait;
+                //    break;
+                //case DrawShape.Pen:
+                //    cursor = Cursors.Pen;
+                //    break;
+                default:
+                    cursor = Cursors.Arrow;
+                    break;
+
+            }
+            this.Cursor = cursor;
+        }
+
         private void ClearForms() {
-            line = null;
-            rect = null;
-            drawingLine = null;
+            //line = null;
+            //rect = null;
+            //drawingLine = null;
+            element = null;
+        }
+
+        private bool IsIllegalShape() {
+            return selectedShape == DrawShape.Pen || selectedShape == DrawShape.Erase;
+        }
+
+        private void HidePreview() {
+            PreviewCanvasDraw.Visibility = Visibility.Hidden;
+        }
+
+        private void ShowPreview() {
+            PreviewCanvasDraw.Visibility = Visibility.Visible;
+        }
+
+        //private void ClearPreview() {
+        //    PreviewCanvasDraw.Strokes.Clear();
+        //}
+
+        private void ClearSubscriptions() {
+            foreach (IDisposable subscription in subscriptions) {
+                subscription.Dispose();
+            }
         }
     }
 }

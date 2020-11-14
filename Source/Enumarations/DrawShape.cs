@@ -1,3 +1,3 @@
 ﻿public enum DrawShape {
-    Pen, Line, Rectangle, Ellipse
+    Pen, Line, Rectangle, Ellipse, Erase, Text, Circle
 }

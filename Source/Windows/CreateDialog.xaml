@@ -1,0 +1,64 @@
+﻿<Window x:Class="TheRippler.Source.Windows.CreateDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TheRippler.Source.Windows"
+        mc:Ignorable="d"
+        Title="New" Height="250" Width="500">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            
+        </Grid.RowDefinitions>
+        <!-- <Grid Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Grid.Column="0">Hello</Label>
+            <Label Grid.Row="1" Grid.Column="0">World 2</Label>
+        </Grid> -->
+        <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <Label>Name:</Label>
+                <TextBlock Text="{Binding Message}"></TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label>Guideline:</Label>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Vertical">
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <Label>Width:</Label>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <Label>Height:</Label>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Label>Resolution:</Label>
+            </StackPanel>
+            <StackPanel Grid.Row="3" Orientation="Horizontal">
+                <Label>Background:</Label>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Margin" Value="5" />
+                </Style>
+            </StackPanel.Resources>
+            <Button Click="OnConfirm">Okay</Button>
+            <Button Click="OnCancel">Cancel</Button>
+            <Button>Save guideline</Button>
+            <Button>Manage guidelines</Button>
+        </StackPanel>
+    </Grid>
+</Window>

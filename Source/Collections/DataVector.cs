@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TheRippler.Source.Collections {
-    class DataVector<T> {
+    public class DataVector<T> {
         private T[] stack;
         private int incrementSize = 0;
         private int _size = 0;

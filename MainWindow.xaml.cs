@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using TheRippler.Source.Collections;
 using TheRippler.Source.Data;
 using TheRippler.Source.Models;
+using TheRippler.Source.Services;
 
 namespace TheRippler {
     /// <summary>
@@ -32,11 +33,13 @@ namespace TheRippler {
         // Private members
         private DrawShape selectedShape;
 
-        private SharedModel model;
+        private readonly SharedModel model;
+        private readonly ToolBarService toolBar;
 
         public MainWindow() {
             InitializeComponent();
             model = SharedModel.GetInstance();
+            toolBar = ToolBarService.GetInstance();
             DataContext = this;
             NextShape(DrawShape.Line);
         }
@@ -57,9 +60,17 @@ namespace TheRippler {
             NextShape(DrawShape.Rectangle);
         }
 
+        private void DrawCircle(object sender, RoutedEventArgs e) {
+            NextShape(DrawShape.Circle);
+        }
+
         private void NextShape(DrawShape shape) {
             //SelectedShape = shape;
             model.Shape = shape;
+        }
+
+        private void OnNew(object sender, RoutedEventArgs e) {
+            toolBar.OpenCreateWindow();
         }
 
         public DrawShape SelectedShape {
@@ -69,6 +80,10 @@ namespace TheRippler {
                     OnPropertyChanged();
                 } 
             }
+        }
+
+        private void Erase(object sender, RoutedEventArgs e) {
+            NextShape(DrawShape.Erase);
         }
     }
 }

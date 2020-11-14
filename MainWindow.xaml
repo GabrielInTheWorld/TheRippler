@@ -10,7 +10,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
-                <MenuItem x:Name="fileNew" Header="New" InputGestureText="Ctrl+N"></MenuItem>
+                <MenuItem x:Name="fileNew" Header="New" InputGestureText="Ctrl+N" Click="OnNew"></MenuItem>
                 <MenuItem x:Name="fileOpen" Header="Open" InputGestureText="Ctrl+O"></MenuItem>
                 <MenuItem x:Name="fileRecentlyOpened" Header="Recently opened...">
 
@@ -27,17 +27,33 @@
         </ControlNamespace:ToolBarControl>
         <ToolBarTray DockPanel.Dock="Left" Orientation="Vertical">
             <ToolBar Name="drawToolbar" Width="50">
-                <RadioButton x:Name="drawPencil" Click="DrawPencil">
-                    <Image Source="/Resources/Icons/Pencil.jpg" Width="32" Height="32"></Image>
+                <RadioButton x:Name="scale">Scale</RadioButton>
+                <RadioButton x:Name="selectArea">Select Area</RadioButton>
+                <RadioButton x:Name="drawPencil" Click="DrawPencil" IsChecked="True">
+                    <Image Source="/Resources/Icons/Light/appbar.draw.pencil.png" Width="32" Height="32"></Image>
                 </RadioButton>
-                <RadioButton x:Name="drawLine" Click="DrawLine" IsChecked="True">
-                    <Image Source="./Resources/Icons/Line.jpg" Width="32" Height="32"></Image>
+                <RadioButton x:Name="drawLine" Click="DrawLine">
+                    <Image Source="./Resources/Icons/Light/appbar.vector.line.png" Width="32" Height="32"></Image>
                 </RadioButton>
                 <RadioButton Click="DrawRectangle">
-                    <Image Source="./Resources/Icons/Rect.jpg" Width="32" Height="32"></Image>
+                    <Image Source="./Resources/Icons/Light/appbar.vector.rectangle.png" Width="32" Height="32"></Image>
                 </RadioButton>
+                <RadioButton Click="DrawCircle">
+                    <Image Source="./Resources/Icons/Light/appbar.vector.circle.png" Width="32" Height="32"></Image>
+                </RadioButton>
+                <RadioButton x:Name="drawText">
+                    <Image Source="./Resources/Icons/Light/appbar.text.serif.png" Width="32" Height="32"></Image>
+                </RadioButton>
+                <RadioButton x:Name="drawRemove" Click="Erase">Rubber</RadioButton>
+                <RadioButton x:Name="crop">Crop</RadioButton>
+                <RadioButton x:Name="drawFlow">Draw Flow</RadioButton>
+                <RadioButton x:Name="magnifyingGlass">Magnifying Glass</RadioButton>
             </ToolBar>
         </ToolBarTray>
+
+        <StackPanel DockPanel.Dock="Right" Width="180">
+            <ControlNamespace:PlaneControl />
+        </StackPanel>
 
         <Grid DockPanel.Dock="Bottom">
            <!-- <Canvas Name="CanvasPreview" Background="Transparent" Panel.ZIndex="2" MouseDown="CanvasMouseDown" MouseLeftButtonUp="CanvasMouseUp" MouseUp="CanvasMouseUp" MouseMove="CanvasMouseMove"></Canvas>

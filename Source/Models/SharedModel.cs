@@ -15,7 +15,7 @@ namespace TheRippler.Source.Models {
         public DrawShape Shape { set { Console.WriteLine(value);  _shape.Next(value); } get { return _shape.Value; } }
         public double Thickness { set; get; }
 
-        private readonly BehaviorSubject<DrawShape> _shape = new BehaviorSubject<DrawShape>();
+        private readonly BehaviorSubject<DrawShape> _shape = new BehaviorSubject<DrawShape>(DrawShape.Pen);
 
         private SharedModel() {}
 
@@ -26,7 +26,7 @@ namespace TheRippler.Source.Models {
             return model;
         }
 
-        public BehaviorSubject<DrawShape> getShape() {
+        public BehaviorSubject<DrawShape> GetShape() {
             return _shape;
         }
     }
